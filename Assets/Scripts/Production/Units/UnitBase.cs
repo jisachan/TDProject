@@ -2,9 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Unit : MonoBehaviour
+public abstract class UnitBase : MonoBehaviour
 {
-    int unitNr;
+    [SerializeField]
+    protected float speed = 1f;
+    
+    [SerializeField]
+    protected float health = 100f;
+
+    public abstract UnitType Type { get; set; }
 
     // Start is called before the first frame update
     void Start()

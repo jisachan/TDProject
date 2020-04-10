@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpawnManager : MonoBehaviour
+public class BigUnit : UnitBase
 {
+    public override UnitType Type { get; set; } = UnitType.Big;
+
     // Start is called before the first frame update
     void Start()
     {
