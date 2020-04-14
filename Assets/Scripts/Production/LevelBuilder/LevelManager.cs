@@ -1,15 +1,39 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
-	static Vector3 worldStartPosition;
-
 	[SerializeField]
 	private GameObject[] tileLayout;
 
-	public static Transform UnitSpawnTile { get; set; }
+	[SerializeField]
+	private Transform map;
 
-	public static Transform UnitDespawnTile { get; set; }
+	private static GridPoint mapSize;
+
+	static Vector3 worldStartPosition;
+
+	public static Tile UnitSpawnTile { get; set; }
+
+	public static Tile UnitDespawnTile { get; set; }
+
+	public static Dictionary<GridPoint, Tile> TilesDictionary { get; set; }
+
+	public float TileSize => 2f;
+
+	private static Stack<Node> finalPath;
+
+	public static Stack<Node> FinalPath
+	{
+		get
+		{
+			if(finalPath == null)
+			{
+				GeneratePath();
+			}
+			return new Stack<Node>(new Stack<Node>(finalPath));
+		}
+	}
 
 	// Start is called before the first frame update
 	void Start()
@@ -19,6 +43,10 @@ public class LevelManager : MonoBehaviour
 
 	public void CreateLevel()
 	{
+		TilesDictionary = new Dictionary<GridPoint, Tile>();
+
+		mapSize = new GridPoint(LevelData.MapData[0].ToCharArray().Length, LevelData.MapData.Length);
+
 		int mapXSize = LevelData.MapData[0].ToCharArray().Length;
 		int mapYSize = LevelData.MapData.Length;
 
@@ -40,7 +68,7 @@ public class LevelManager : MonoBehaviour
 
 	private void PlaceTile(TileType tileType, int x, int y)
 	{
-		Debug.Log("tileType: " + tileType + " / x, y:" + x + ", " + y);
+		//Debug.Log("tileType: " + tileType + " / x, y:" + x + ", " + y);
 
 		int tileIndex = (int)tileType;
 
@@ -49,18 +77,47 @@ public class LevelManager : MonoBehaviour
 
 		//is there a way to use the enum for this or is the enum kind of pointless to use at all?
 		//TileScript newTile = Instantiate(tileLayout[tileIndex]).GetComponent<TileScript>();
-		GameObject newTile = Instantiate(tileLayout[tileIndex]);
+		//GameObject newTile = Instantiate(tileLayout[tileIndex]);
+		
+		Tile newTile = Instantiate(tileLayout[tileIndex]).GetComponent<Tile>();
+		
+		newTile.Setup(new GridPoint(x, y), new Vector3(worldStartPosition.x + (TileSize * x), 0, worldStartPosition.y - (TileSize * y)), map);
 
-		if(tileType == TileType.Start)
+		if (tileType == TileType.Start)
 		{
-			UnitSpawnTile = newTile.transform;
+			UnitSpawnTile = newTile;
 		}
 
 		if(tileType == TileType.End)
 		{
-			UnitDespawnTile = newTile.transform;
+			UnitDespawnTile = newTile;
 		}
 
-		newTile.transform.position = worldStartPosition + new Vector3(x * 2f, 0, -y * 2f);
+		if(tileType == TileType.Start || tileType == TileType.End || tileType == TileType.Path)
+		{
+			newTile.Walkable = true;
+		}
+		//newTile.transform.position = worldStartPosition + new Vector3(x * 2f, 0, -y * 2f);
+
+		TilesDictionary.Add(new GridPoint(x, y), newTile);
+	}
+
+	public static void GeneratePath()
+	{
+		finalPath = AStar.GetPath(UnitSpawnTile.GridPosition, UnitDespawnTile.GridPosition);
+
+		foreach (var item in finalPath)
+		{
+			for (int i = 0; i < finalPath.Count; i++)
+			{
+				Debug.Log("path" + i + ": " + item);
+			}
+		}
+		Debug.Log("finished generating path.");
+	}
+
+	public static bool InBounds(GridPoint position)
+	{
+		return position.X >= 0 && position.Y >= 0 && position.X < mapSize.X && position.Y < mapSize.Y;
 	}
 }

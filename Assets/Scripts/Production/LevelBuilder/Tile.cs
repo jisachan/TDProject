@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TileScript : MonoBehaviour
+public class Tile : MonoBehaviour
 {
-    public static Point GridPosition { get; set; }
+    public GridPoint GridPosition { get; set; }
 
     public Vector3 WorldPosition => transform.position;
+
+    public bool Walkable = false;
 
     // Start is called before the first frame update
     void Start()
@@ -14,7 +16,7 @@ public class TileScript : MonoBehaviour
         
     }
 
-    public void Setup(Point gridPos, Vector3 worldPosition, Transform parent)
+    public void Setup(GridPoint gridPos, Vector3 worldPosition, Transform parent)
     {
         //look into these when needed, might be nonsensical
         GridPosition = gridPos;

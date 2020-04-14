@@ -43,19 +43,22 @@ public class SpawnManager : MonoBehaviour
     {
         if(currentStdUnitNr < maxStdUnitNr)
         {
-            Instantiate(units[0], LevelManager.UnitSpawnTile);
+            GameObject stdUnit = Instantiate(units[0]);
+            stdUnit.transform.position = LevelManager.UnitSpawnTile.WorldPosition;
             currentStdUnitNr++;
         }
 
         if (currentBigUnitNr < maxBigUnitNr)
         {
-            Instantiate(units[1], LevelManager.UnitSpawnTile);
+            GameObject bigUnit = Instantiate(units[1]);
+            bigUnit.transform.position = LevelManager.UnitSpawnTile.WorldPosition;
             currentBigUnitNr++;
         }
     }
 
     public void DespawnUnit()
     {
+
         //use fancy pooling thingies
     }
 }

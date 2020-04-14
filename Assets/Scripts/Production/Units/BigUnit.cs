@@ -6,15 +6,9 @@ public class BigUnit : UnitBase
 {
     public override UnitType Type { get; set; } = UnitType.Big;
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        speed = 1;
+        health = 200;
     }
 }
