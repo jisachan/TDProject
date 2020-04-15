@@ -10,7 +10,10 @@ public abstract class UnitBase : MonoBehaviour
     [SerializeField]
     protected float health;
 
+    [SerializeField, Range(0.05f, 0.5f)]
     protected float accuracy = 0.1f;
+
+    public int MyProperty { get; set; }
 
     protected Stack<Node> path;
 
@@ -19,6 +22,18 @@ public abstract class UnitBase : MonoBehaviour
     public abstract UnitType Type { get; set; }
 
     public static GridPoint GridPosition { get; set; }
+
+    private void OnEnable()
+    {
+        TowerBase.targets.Add(this);
+        Debug.Log("added this to targets");
+    }
+
+    private void OnDisable()
+    {
+        TowerBase.targets.Remove(this);
+        Debug.Log("removed this from targets");
+    }
 
     void Start()
     {
@@ -40,10 +55,11 @@ public abstract class UnitBase : MonoBehaviour
     {
         Move();
 
-        //move to observer thingie later, listen for this!
-        if (Vector3.Distance(transform.position, LevelManager.UnitDespawnTile.WorldPosition) < accuracy)
+        //move to observer thingie
+        if(Mathf.Approximately(Vector3.Distance(transform.position, destination), 0))
         {
-            Debug.Log("Despawnnnn");
+            //change to pooler thingie
+            Destroy(gameObject);
         }
     }
 
@@ -53,16 +69,27 @@ public abstract class UnitBase : MonoBehaviour
 
         if (Vector3.Distance(transform.position, destination) < accuracy)
         {
-            //if (path.Pop().GridPosition == LevelManager.UnitDespawnTile.GridPosition)
-            //if (path != null && path.Count == 0)
-            //{
-            //    Debug.Log("DESPAWN! MUAHAHA!");
-            //}
             if (path != null && path.Count > 0)
             {
                 GridPosition = path.Peek().GridPosition;
                 destination = path.Pop().WorldPosition;
             }
         }
+    }
+
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+        
+        if(health <= 0)
+        {
+            Die();
+        }
+    }
+
+    public void Die()
+    {
+        Destroy(gameObject);
+        TowerBase.targets.Remove(this);
     }
 }

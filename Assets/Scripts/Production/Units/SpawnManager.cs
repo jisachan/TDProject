@@ -24,10 +24,7 @@ public class SpawnManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            SpawnUnit();
-        }
+
     }
 
     public void StartWave()
@@ -36,29 +33,38 @@ public class SpawnManager : MonoBehaviour
         currentStdUnitNr = 0;
         maxBigUnitNr = LevelData.GetUnitNr(currentWave, UnitType.Big);
         currentBigUnitNr = 0;
+
+        StartCoroutine(SpawnUnit());
+
         //currentWave++;
     }
 
-    public void SpawnUnit() 
+    public IEnumerator SpawnUnit() 
     {
-        if(currentStdUnitNr < maxStdUnitNr)
+        while (true)
         {
-            GameObject stdUnit = Instantiate(units[0]);
-            stdUnit.transform.position = LevelManager.UnitSpawnTile.WorldPosition;
-            currentStdUnitNr++;
+            //would be fun to make a random enemy spawn, rather than always std >>> big.
+            //if there is time...
+            if (currentStdUnitNr < maxStdUnitNr)
+            {
+                GameObject stdUnit = Instantiate(units[0]);
+                stdUnit.transform.position = LevelManager.UnitSpawnTile.WorldPosition;
+                currentStdUnitNr++;
+            }
+
+            else if (currentBigUnitNr < maxBigUnitNr)
+            {
+                GameObject bigUnit = Instantiate(units[1]);
+                bigUnit.transform.position = LevelManager.UnitSpawnTile.WorldPosition;
+                currentBigUnitNr++;
+            }
+
+            if (currentStdUnitNr == maxStdUnitNr && currentBigUnitNr == maxBigUnitNr)
+            {
+                yield break;
+            }
+
+            yield return new WaitForSeconds(spawnTimer);
         }
-
-        if (currentBigUnitNr < maxBigUnitNr)
-        {
-            GameObject bigUnit = Instantiate(units[1]);
-            bigUnit.transform.position = LevelManager.UnitSpawnTile.WorldPosition;
-            currentBigUnitNr++;
-        }
-    }
-
-    public void DespawnUnit()
-    {
-
-        //use fancy pooling thingies
     }
 }

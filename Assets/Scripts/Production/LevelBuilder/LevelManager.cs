@@ -105,15 +105,6 @@ public class LevelManager : MonoBehaviour
 	public static void GeneratePath()
 	{
 		finalPath = AStar.GetPath(UnitSpawnTile.GridPosition, UnitDespawnTile.GridPosition);
-
-		foreach (var item in finalPath)
-		{
-			for (int i = 0; i < finalPath.Count; i++)
-			{
-				Debug.Log("path" + i + ": " + item);
-			}
-		}
-		Debug.Log("finished generating path.");
 	}
 
 	public static bool InBounds(GridPoint position)
