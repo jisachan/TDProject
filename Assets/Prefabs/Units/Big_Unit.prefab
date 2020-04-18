@@ -626,7 +626,7 @@ GameObject:
   - component: {fileID: 3358623668188840343}
   - component: {fileID: -1010086026440075636}
   m_Layer: 0
-  m_Name: bigUnit
+  m_Name: Big_Unit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -678,9 +678,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b0417ceae771b241bc165a29e404eec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  units: []
-  speed: 1
   health: 200
+  accuracy: 0.1
+  speed: 1
+  strength: 1
 --- !u!1 &3358623668240928174
 GameObject:
   m_ObjectHideFlags: 0

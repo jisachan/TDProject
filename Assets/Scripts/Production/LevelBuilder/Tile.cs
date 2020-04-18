@@ -8,13 +8,11 @@ public class Tile : MonoBehaviour
 
     public Vector3 WorldPosition => transform.position;
 
-    public bool Walkable = false;
+    public Vector3 pathPosition;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    float pathOffset = 0.6f;
+
+    public bool Walkable = false;
 
     public void Setup(GridPoint gridPos, Vector3 worldPosition, Transform parent)
     {
@@ -22,5 +20,10 @@ public class Tile : MonoBehaviour
         GridPosition = gridPos;
         transform.position = worldPosition;
         transform.SetParent(parent);
+    }
+
+    public void SetPathPosition()
+    {
+        pathPosition = new Vector3(WorldPosition.x, WorldPosition.y + pathOffset, WorldPosition.z);
     }
 }

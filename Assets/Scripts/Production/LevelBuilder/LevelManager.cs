@@ -38,7 +38,15 @@ public class LevelManager : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
 	{
+		LevelData.GetData();
 		CreateLevel();
+		AStar.CreateNodes();
+	}
+
+	void OnDestroy()
+	{
+		finalPath = null;
+		TilesDictionary.Clear();
 	}
 
 	public void CreateLevel()
@@ -96,10 +104,12 @@ public class LevelManager : MonoBehaviour
 		if(tileType == TileType.Start || tileType == TileType.End || tileType == TileType.Path)
 		{
 			newTile.Walkable = true;
+			newTile.SetPathPosition();
 		}
 		//newTile.transform.position = worldStartPosition + new Vector3(x * 2f, 0, -y * 2f);
 
 		TilesDictionary.Add(new GridPoint(x, y), newTile);
+		//AStar.AddNode(new GridPoint(x, y), newTile);
 	}
 
 	public static void GeneratePath()

@@ -1,14 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Tools;
 using UnityEngine;
 
 public class BigUnit : UnitBase
 {
+    //[SerializeField]
+    //GameObject bigUnitPrefab;
+
+    //IPool<BigUnit> bigUnitPool;
+
     public override UnitType Type { get; set; } = UnitType.Big;
 
-    void Awake()
+    //public BigUnit RentFromPool()
+    //{
+    //    return bigUnitPool.Rent() as BigUnit;
+    //}
+    public override void ReturnToPool()
     {
-        speed = 1;
-        health = 200;
+        base.ReturnToPool();
+        SpawnManager.returnBigToPool?.Invoke(this);
+        //bigUnitPool.UnRent(this as BigUnit);
     }
 }

@@ -130,9 +130,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 607300554}
-  - component: {fileID: 607300553}
   - component: {fileID: 607300555}
   - component: {fileID: 607300556}
+  - component: {fileID: 607300553}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -152,6 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fca2dcc5c4a6824b8efeaa52de07361, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameSpeed: 3
 --- !u!4 &607300554
 Transform:
   m_ObjectHideFlags: 0
@@ -198,9 +199,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bc68a6d8bccbae4b972a020a24aba45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  units:
-  - {fileID: 3358623668188840345, guid: f47e0140bd7a4e844becfd02a9fea672, type: 3}
-  - {fileID: 3358623668188840345, guid: 116fda0e5defb46aba819fdb1f4ec0bf, type: 3}
+  stdUnit: {fileID: 3358623668188840345, guid: f47e0140bd7a4e844becfd02a9fea672, type: 3}
+  bigUnit: {fileID: 3358623668188840345, guid: 116fda0e5defb46aba819fdb1f4ec0bf, type: 3}
 --- !u!1 &1438225784
 GameObject:
   m_ObjectHideFlags: 0

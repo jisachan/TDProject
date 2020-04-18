@@ -23,7 +23,7 @@ public class Node
 	{
 		this.TileRef = tileRef;
 		this.GridPosition = tileRef.GridPosition;
-		this.WorldPosition = tileRef.WorldPosition;
+		this.WorldPosition = tileRef.pathPosition;
 	}
 
 	public void CalcValues(Node parent, Node goal, int gCost)

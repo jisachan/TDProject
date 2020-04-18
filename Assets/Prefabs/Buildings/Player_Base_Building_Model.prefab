@@ -182,6 +182,7 @@ GameObject:
   m_Component:
   - component: {fileID: 344053378720898323}
   - component: {fileID: -3244697959649099946}
+  - component: {fileID: -6856146465416329599}
   m_Layer: 0
   m_Name: Player_Base_Building_Model
   m_TagString: Untagged
@@ -217,6 +218,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53512a53667ce0f419c870c5598995df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Walkable: 0
+--- !u!114 &-6856146465416329599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6360046985728068882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19c2fdfe6579c4f47b8d51a6e07093d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lives: 20
 --- !u!1 &7905741092742571039
 GameObject:
   m_ObjectHideFlags: 0

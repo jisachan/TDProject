@@ -1,70 +1,124 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using System.Collections;
 using UnityEngine;
+using Tools;
 
 public class SpawnManager : MonoBehaviour
 {
-    [SerializeField]
-    GameObject[] units;
+	float spawnTimer = 2.5f;
+	int maxWaves;
+	int currentWave = 1;
+	int currentStdUnitNr;
+	int maxStdUnitNr;
+	int currentBigUnitNr;
+	int maxBigUnitNr;
+	bool allUnitsSpawned;
 
-    float spawnTimer = 2.5f;
-    int maxWaves; //maxWaves = LevelData.WaveData.Length;
-    int currentWave = 1;
-    int currentStdUnitNr;
-    int maxStdUnitNr;
-    int currentBigUnitNr;
-    int maxBigUnitNr;
+	// gwang
+	[SerializeField]
+	GameObject stdUnit;
+	[SerializeField]
+	GameObject bigUnit;
+	IPool<StandardUnit> stdUnitPool;
+	IPool<BigUnit> bigUnitPool;
+	
+	public static Action<StandardUnit> returnStdToPool;
+	public static Action<BigUnit> returnBigToPool;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        StartWave();
-    }
+	// Start is called before the first frame update
+	void Start()
+	{
+		returnStdToPool += ReturnStdUnitToPool;
+		returnBigToPool += ReturnBigUnitToPool;
 
-    // Update is called once per frame
-    void Update()
-    {
+		// gwang
+		stdUnitPool = new ObjectPool<StandardUnit>(stdUnit, transform);
+		bigUnitPool = new ObjectPool<BigUnit>(bigUnit, transform);
+		
+		maxWaves = LevelData.WaveData.Length;
+		Debug.Log("maxWaves: " + maxWaves);
+		StartWave();
+	}
 
-    }
+	public void StartWave()
+	{
+		allUnitsSpawned = false;
+		maxStdUnitNr = LevelData.GetUnitNr(currentWave, UnitType.Standard);
+		currentStdUnitNr = 0;
+		maxBigUnitNr = LevelData.GetUnitNr(currentWave, UnitType.Big);
+		currentBigUnitNr = 0;
 
-    public void StartWave()
-    {
-        maxStdUnitNr = LevelData.GetUnitNr(currentWave, UnitType.Standard);
-        currentStdUnitNr = 0;
-        maxBigUnitNr = LevelData.GetUnitNr(currentWave, UnitType.Big);
-        currentBigUnitNr = 0;
+		StartCoroutine(SpawnUnit());
 
-        StartCoroutine(SpawnUnit());
+	}
 
-        //currentWave++;
-    }
+	public IEnumerator SpawnUnit()
+	{
+		while (true)
+		{
+			//would be fun to make a random enemy spawn, rather than always std >>> big.
+			//if there is time...
+			//would also be nice if they turned to the front...
+			if (allUnitsSpawned == false)
+			{
+				if (currentStdUnitNr < maxStdUnitNr)
+				{
+					//gwang
+					StandardUnit unit = stdUnitPool.Rent() as StandardUnit;
+					unit.transform.position = LevelManager.UnitSpawnTile.pathPosition;
+					unit.gameObject.SetActive(true);
 
-    public IEnumerator SpawnUnit() 
-    {
-        while (true)
-        {
-            //would be fun to make a random enemy spawn, rather than always std >>> big.
-            //if there is time...
-            if (currentStdUnitNr < maxStdUnitNr)
-            {
-                GameObject stdUnit = Instantiate(units[0]);
-                stdUnit.transform.position = LevelManager.UnitSpawnTile.WorldPosition;
-                currentStdUnitNr++;
-            }
+					//StandardUnit stdUnit = 
+					//stdUnit.RentFromPool();
+					//stdUnit.transform.position = LevelManager.UnitSpawnTile.pathPosition;
+					currentStdUnitNr++;
+				}
 
-            else if (currentBigUnitNr < maxBigUnitNr)
-            {
-                GameObject bigUnit = Instantiate(units[1]);
-                bigUnit.transform.position = LevelManager.UnitSpawnTile.WorldPosition;
-                currentBigUnitNr++;
-            }
+				else if (currentBigUnitNr < maxBigUnitNr)
+				{
+					//gwang
+					BigUnit unit = bigUnitPool.Rent() as BigUnit;
+					unit.transform.position = LevelManager.UnitSpawnTile.pathPosition;
+					unit.gameObject.SetActive(true);
 
-            if (currentStdUnitNr == maxStdUnitNr && currentBigUnitNr == maxBigUnitNr)
-            {
-                yield break;
-            }
+					//BigUnit bigUnit = bigUnitPool.Rent() as BigUnit;
+					//bigUnit.RentFromPool();
+					//bigUnit.transform.position = LevelManager.UnitSpawnTile.pathPosition;
+					currentBigUnitNr++;
+				}
+			}
 
-            yield return new WaitForSeconds(spawnTimer);
-        }
-    }
+			if (currentStdUnitNr == maxStdUnitNr && currentBigUnitNr == maxBigUnitNr)
+			{
+				allUnitsSpawned = true;
+				if (TowerBase.targets.Count == 0)
+				{allUnitsSpawned = true;
+					if (currentWave != maxWaves)
+					{
+						currentWave++;
+						StartWave();
+						yield break;
+					}
+					else
+					{
+						GameManager.StartNextLevel();
+					}
+				}
+			}
+
+			yield return new WaitForSeconds(spawnTimer);
+		}
+	}
+
+	void ReturnStdUnitToPool(StandardUnit unit)
+	{
+		stdUnitPool.UnRent(unit);
+		unit.gameObject.SetActive(false);
+	}
+
+	void ReturnBigUnitToPool(BigUnit unit)
+	{
+		bigUnitPool.UnRent(unit);
+		unit.gameObject.SetActive(false);
+	}
 }

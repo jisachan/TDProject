@@ -1,52 +1,69 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class ProjectileBase : MonoBehaviour
+public abstract class ProjectileBase : MonoBehaviour
 {
     [SerializeField]
-    float speed = 2;
+    protected float speed = 5;
 
     [SerializeField]
-    float damage = 20;
+    protected float damage = 20;
 
-    UnitBase target;
+    protected UnitBase target;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField]
+    protected bool hasDealtDamage = false;
 
     // Update is called once per frame
     void Update()
     {
-        //transform.position = Vector3.MoveTowards(transform.position, destination, speed * Time.deltaTime);
+        if (target != null)
+        {
+            ShootProjectile();
+
+            //move to observer later
+            if (Mathf.Approximately(Vector3.Distance(transform.position, target.transform.position), 0))
+            {
+                if (hasDealtDamage == false)
+                {
+                    DealDamage();
+                }
+            }
+        }
+        else
+        {
+            DespawnProjectile();
+        }
     }
 
-    public void DealDamage(ProjectileType projectileType)
+    public void DealDamage()
     {
         target.TakeDamage(damage);
-
-        if (projectileType == ProjectileType.Fire)
-        {
-            //specialabilitystuff
-        }
+        SpecialAbility();
+        hasDealtDamage = true;
+        HideVisibility();
     }
 
     public virtual void SpecialAbility()
     {
-
     }
 
     public void SetTarget(UnitBase target)
     {
         this.target = target;
     }
-}
 
-public enum ProjectileType
-{
-    Fire,
-    Ice
+    public void ShootProjectile()
+    {
+        transform.position = Vector3.MoveTowards(transform.position, target.transform.position, speed * Time.deltaTime);
+    }
+
+    public virtual void HideVisibility()
+    { 
+    
+    }
+
+    public virtual void DespawnProjectile()
+    {
+        hasDealtDamage = false;
+    }
 }

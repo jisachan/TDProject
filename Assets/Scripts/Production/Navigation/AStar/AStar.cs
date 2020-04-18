@@ -11,12 +11,12 @@ public class AStar
 	static Tile neighbourTile;
 
 	static int gCost = 10;
-
-	private static void CreateNodes()
+	
+	public static void CreateNodes()
 	{
 		nodes = new Dictionary<GridPoint, Node>();
 
-		foreach(Tile tile in LevelManager.TilesDictionary.Values)
+		foreach (Tile tile in LevelManager.TilesDictionary.Values)
 		{
 			nodes.Add(tile.GridPosition, new Node(tile));
 		}
@@ -24,11 +24,6 @@ public class AStar
 
 	public static Stack<Node> GetPath(GridPoint start, GridPoint goal)
 	{
-		if (nodes == null)
-		{
-			CreateNodes();
-		}
-
 		HashSet<Node> openList = new HashSet<Node>();
 
 		HashSet<Node> closedList = new HashSet<Node>();

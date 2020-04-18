@@ -2,28 +2,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Tools;
 
-public class TowerBase : MonoBehaviour
+public abstract class TowerBase : MonoBehaviour
 {
 	[SerializeField]
 	float firingTimer = 3;
-	//float damage;
 
 	[SerializeField]
 	float range = 2f;
 
-	[SerializeField]
-	ProjectileBase projectile;
-
-	UnitBase target;
+	[HideInInspector]
+	public UnitBase target;
 
 	public static List<UnitBase> targets = new List<UnitBase>();
 
-	private List<UnitBase> targetsWithinRange = new List<UnitBase>();
+	public static List<UnitBase> targetsWithinRange = new List<UnitBase>();
+
+	public static Action<ProjectileBase> returnToPool;
 
 	// Start is called before the first frame update
-	void Start()
+	protected virtual void Start()
 	{
+		returnToPool += ReturnToPool;
+
 		StartCoroutine(ShootBullet());
 	}
 
@@ -69,8 +71,10 @@ public class TowerBase : MonoBehaviour
 		{
 			if (target)
 			{
-				//shootbulletstuff at target
-				SpawnBullet();
+				if (target.isActiveAndEnabled)
+				{
+					SpawnBullet();
+				}
 				yield return new WaitForSeconds(firingTimer);
 			}
 			else
@@ -92,10 +96,14 @@ public class TowerBase : MonoBehaviour
 		}
 	}
 
-	void SpawnBullet()
+	protected virtual void SpawnBullet()
 	{
-		Debug.Log("pew pew!");
-		ProjectileBase bullet = Instantiate(projectile);
-		bullet.SetTarget(target);
+
+	}
+
+	//wont it cause problems if this is projectilebase when pool doesnt use it?
+	public virtual void ReturnToPool(ProjectileBase projectileToReturn)
+	{
+
 	}
 }

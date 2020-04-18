@@ -1,95 +1,103 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class UnitBase : MonoBehaviour
 {
-    [SerializeField]
-    protected float speed;
-    
-    [SerializeField]
-    protected float health;
+	[SerializeField]
+	protected float health = 100;
 
-    [SerializeField, Range(0.05f, 0.5f)]
-    protected float accuracy = 0.1f;
+	[SerializeField, Range(0.05f, 0.5f)]
+	protected float accuracy = 0.1f;
 
-    public int MyProperty { get; set; }
+	[SerializeField]
+	private float speed = 2;
 
-    protected Stack<Node> path;
+	public float Speed { get => speed; set => speed = value; }
 
-    protected Vector3 destination;
+	private Vector3 destination;
 
-    public abstract UnitType Type { get; set; }
+	public Vector3 Destination { get => destination; set => destination = value; }
 
-    public static GridPoint GridPosition { get; set; }
+	protected Stack<Node> path;
 
-    private void OnEnable()
-    {
-        TowerBase.targets.Add(this);
-        Debug.Log("added this to targets");
-    }
+	public abstract UnitType Type { get; set; }
 
-    private void OnDisable()
-    {
-        TowerBase.targets.Remove(this);
-        Debug.Log("removed this from targets");
-    }
+	public static GridPoint GridPosition { get; set; }
 
-    void Start()
-    {
-        SetPath(LevelManager.FinalPath);
-    }
+	public int strength = 1;
+	public int Strength { get => strength; set => strength = value; }
 
-    public void SetPath(Stack<Node> newPath)
-    {
-        if (newPath != null)
-        {
-            path = newPath;
+	private void OnEnable()
+	{
+		TowerBase.targets.Add(this);
+	}
 
-            GridPosition = path.Peek().GridPosition;
-            destination = path.Pop().WorldPosition;
-        }
-    }
+	private void OnDisable()
+	{
+		TowerBase.targets.Remove(this);
 
-    void Update()
-    {
-        Move();
+		if (TowerBase.targetsWithinRange.Contains(this))
+		{
+			TowerBase.targetsWithinRange.Remove(this);
+		}
+	}
 
-        //move to observer thingie
-        if(Mathf.Approximately(Vector3.Distance(transform.position, destination), 0))
-        {
-            //change to pooler thingie
-            Destroy(gameObject);
-        }
-    }
+	protected virtual void Start()
+	{
+		SetPath(LevelManager.FinalPath);
+	}
 
-    private void Move()
-    {
-        transform.position = Vector3.MoveTowards(transform.position, destination, speed * Time.deltaTime);
+	void Update()
+	{
+		Move();
+		CheckDistanceToPlayerBase();
+	}
 
-        if (Vector3.Distance(transform.position, destination) < accuracy)
-        {
-            if (path != null && path.Count > 0)
-            {
-                GridPosition = path.Peek().GridPosition;
-                destination = path.Pop().WorldPosition;
-            }
-        }
-    }
+	void CheckDistanceToPlayerBase()
+	{
+		if (Mathf.Approximately(Vector3.Distance(transform.position, destination), 0))
+		{
+			Player.reachedPlayerBase?.Invoke(this);
+		}
+	}
+	public void SetPath(Stack<Node> newPath)
+	{
+		if (newPath != null)
+		{
+			path = newPath;
 
-    public void TakeDamage(float damage)
-    {
-        health -= damage;
-        
-        if(health <= 0)
-        {
-            Die();
-        }
-    }
+			GridPosition = path.Peek().GridPosition;
+			Destination = path.Pop().WorldPosition;
+		}
+	}
 
-    public void Die()
-    {
-        Destroy(gameObject);
-        TowerBase.targets.Remove(this);
-    }
+	private void Move()
+	{
+		transform.position = Vector3.MoveTowards(transform.position, Destination, Speed * Time.deltaTime);
+
+		if (Vector3.Distance(transform.position, Destination) < accuracy)
+		{
+			if (path != null && path.Count > 0)
+			{
+				GridPosition = path.Peek().GridPosition;
+				Destination = path.Pop().WorldPosition;
+			}
+		}
+	}
+
+	public void TakeDamage(float damage)
+	{
+		health -= damage;
+		if (health <= 0)
+		{
+			//Debug.Log(this.name + " died");
+			ReturnToPool();
+		}
+	}
+
+	public virtual void ReturnToPool()
+	{
+	}
 }

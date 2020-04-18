@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 using TowerDefense;
+using UnityEngine.SceneManagement;
 
 public static class MapReader
 {
+	static TextAsset mapText;
+
 	public static string ReadTextMap()
 	{
-		TextAsset mapText = Resources.Load(ProjectPaths.RESOURCES_MAP_SETTINGS + "map_1") as TextAsset;
+		mapText = Resources.Load(ProjectPaths.RESOURCES_MAP_SETTINGS + "map_"+ GameManager.nextScene.ToString()) as TextAsset;
 
 		return mapText.text;
 	}
