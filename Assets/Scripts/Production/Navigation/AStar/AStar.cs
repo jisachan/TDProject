@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 public class AStar
 {
-	private static Dictionary<GridPoint, Node> nodes;
+	static Dictionary<GridPoint, Node> nodes;
 
 	static Tile neighbourTile;
 
@@ -44,14 +42,14 @@ public class AStar
 					{
 
 						GridPoint neighbourPos = new GridPoint(currentNode.GridPosition.X - x,
-														currentNode.GridPosition.Y - y);
+																currentNode.GridPosition.Y - y);
 
 						if (LevelManager.InBounds(neighbourPos))
 						{
 
 							neighbourTile = LevelManager.TilesDictionary[neighbourPos];
 
-							if (neighbourTile.Walkable == true && neighbourPos != currentNode.GridPosition)
+							if (neighbourTile.walkable == true && neighbourPos != currentNode.GridPosition)
 							{
 								Node neighbour = nodes[neighbourPos];
 

@@ -179,6 +179,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5310c035c9c4334c94eb21718b32cf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  map: {fileID: 1438225785}
   tileLayout:
   - {fileID: 8446340793006353421, guid: 3445e6bc04d6d478291c03e5d82bb4fc, type: 3}
   - {fileID: 5807043221564994009, guid: 146d056a4463e4d4380e1679e4d2e16f, type: 3}
@@ -186,7 +187,6 @@ MonoBehaviour:
   - {fileID: 5719485938209910767, guid: 9058376e4a8804756acc0e60103feae4, type: 3}
   - {fileID: 6189042043493516721, guid: ddaec73c1732b4af4b5f402d92b9f36f, type: 3}
   - {fileID: 6360046985728068882, guid: c6e46598445204935bcf241407b687d5, type: 3}
-  map: {fileID: 1438225785}
 --- !u!114 &607300556
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -314,3 +314,33 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!1 &2042364764
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2042364765}
+  m_Layer: 0
+  m_Name: BulletPoolTransform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2042364765
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2042364764}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 20.316158, y: 1.14538, z: -6.1150236}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

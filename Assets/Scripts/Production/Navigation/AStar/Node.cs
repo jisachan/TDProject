@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Node
 {
 	public GridPoint GridPosition { get; private set; }
 
-	public Tile TileRef { get; private set; }
-
 	public Vector3 WorldPosition { get; set; }
 
 	public Node Parent { get; private set; }
+
+	public Tile TileRef { get; private set; }
 
 	public int G { get; set; }
 
@@ -23,7 +21,7 @@ public class Node
 	{
 		this.TileRef = tileRef;
 		this.GridPosition = tileRef.GridPosition;
-		this.WorldPosition = tileRef.pathPosition;
+		this.WorldPosition = tileRef.PathPosition;
 	}
 
 	public void CalcValues(Node parent, Node goal, int gCost)
@@ -31,7 +29,7 @@ public class Node
 		this.Parent = parent;
 		this.G = parent.G + gCost;
 		this.H = (Math.Abs(GridPosition.X - goal.GridPosition.X) +
-					Math.Abs(goal.GridPosition.Y - GridPosition.Y) /*need multiplier?*/);
+					Math.Abs(goal.GridPosition.Y - GridPosition.Y));
 		this.F = G + H;
 	}
 }

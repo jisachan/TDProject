@@ -3,15 +3,12 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
-	[SerializeField]
-	private GameObject[] tileLayout;
+	//for organizing the tiles in the editor
+	[SerializeField, Tooltip("Where to organize/spawn game objects in the editor's Scene heirarchy.")]
+	Transform map;
 
-	[SerializeField]
-	private Transform map;
-
-	private static GridPoint mapSize;
-
-	static Vector3 worldStartPosition;
+	[SerializeField, Tooltip("Array of tiles to be used for the map's layout.")]
+	GameObject[] tileLayout;
 
 	public static Tile UnitSpawnTile { get; set; }
 
@@ -21,13 +18,21 @@ public class LevelManager : MonoBehaviour
 
 	public float TileSize => 2f;
 
-	private static Stack<Node> finalPath;
+	static GridPoint mapSize;
+
+	static Vector3 worldStartPosition;
+
+	static Stack<Node> finalPath;
+
+	int mapXSize;
+
+	int mapYSize;
 
 	public static Stack<Node> FinalPath
 	{
 		get
 		{
-			if(finalPath == null)
+			if (finalPath == null)
 			{
 				GeneratePath();
 			}
@@ -35,7 +40,6 @@ public class LevelManager : MonoBehaviour
 		}
 	}
 
-	// Start is called before the first frame update
 	void Start()
 	{
 		LevelData.GetData();
@@ -46,20 +50,46 @@ public class LevelManager : MonoBehaviour
 	void OnDestroy()
 	{
 		finalPath = null;
+		ClearDictionary();
+	}
+
+
+	public void CreateDictionary()
+	{
+		TilesDictionary = new Dictionary<GridPoint, Tile>();
+	}
+
+	public void ClearDictionary()
+	{
 		TilesDictionary.Clear();
+	}
+
+	public void AddTileToDictionary(Tile newTile, int x, int y)
+	{
+		TilesDictionary.Add(new GridPoint(x, y), newTile);
+	}
+
+	public void SetMapSize()
+	{
+		mapSize = new GridPoint(LevelData.MapData[0].ToCharArray().Length, LevelData.MapData.Length);
+
+		mapXSize = LevelData.MapData[0].ToCharArray().Length;
+		mapYSize = LevelData.MapData.Length;
+
+	}
+
+	public void SetWorldStartPosition()
+	{
+		worldStartPosition = new Vector3(0, 0, 0);
 	}
 
 	public void CreateLevel()
 	{
-		TilesDictionary = new Dictionary<GridPoint, Tile>();
+		CreateDictionary();
 
-		mapSize = new GridPoint(LevelData.MapData[0].ToCharArray().Length, LevelData.MapData.Length);
+		SetMapSize();
 
-		int mapXSize = LevelData.MapData[0].ToCharArray().Length;
-		int mapYSize = LevelData.MapData.Length;
-
-		//worldStartPosition = Camera.main.ScreenToWorldPoint(new Vector3(0, 50));
-		worldStartPosition = new Vector3(0, 0, 0);
+		SetWorldStartPosition();
 
 		for (int y = 0; y < mapYSize; y++)
 		{
@@ -67,27 +97,26 @@ public class LevelManager : MonoBehaviour
 
 			for (int x = 0; x < mapXSize; x++)
 			{
-				//double check tomorrow
 				TileType type = (TileType)int.Parse(newTiles[x].ToString());
 				PlaceTile(type, x, y);
 			}
 		}
 	}
 
-	private void PlaceTile(TileType tileType, int x, int y)
+	private int GetTileIndex(TileType tileType)
 	{
-		//Debug.Log("tileType: " + tileType + " / x, y:" + x + ", " + y);
-
 		int tileIndex = (int)tileType;
 
 		if (tileIndex == 8) { tileIndex = 4; }
 		if (tileIndex == 9) { tileIndex = 5; }
 
-		//is there a way to use the enum for this or is the enum kind of pointless to use at all?
-		//TileScript newTile = Instantiate(tileLayout[tileIndex]).GetComponent<TileScript>();
-		//GameObject newTile = Instantiate(tileLayout[tileIndex]);
-		
-		Tile newTile = Instantiate(tileLayout[tileIndex]).GetComponent<Tile>();
+		return tileIndex;
+	}
+
+	private void PlaceTile(TileType tileType, int x, int y)
+	{
+		//is there a way to use the TileType enum for this or is the enum kind of pointless to use here?
+		Tile newTile = Instantiate(tileLayout[GetTileIndex(tileType)]).GetComponent<Tile>();
 		
 		newTile.Setup(new GridPoint(x, y), new Vector3(worldStartPosition.x + (TileSize * x), 0, worldStartPosition.y - (TileSize * y)), map);
 
@@ -101,15 +130,14 @@ public class LevelManager : MonoBehaviour
 			UnitDespawnTile = newTile;
 		}
 
+		//found the IsWalkable method in TileMethods after already having created this. My bad!
 		if(tileType == TileType.Start || tileType == TileType.End || tileType == TileType.Path)
 		{
-			newTile.Walkable = true;
+			newTile.walkable = true;
 			newTile.SetPathPosition();
 		}
-		//newTile.transform.position = worldStartPosition + new Vector3(x * 2f, 0, -y * 2f);
 
-		TilesDictionary.Add(new GridPoint(x, y), newTile);
-		//AStar.AddNode(new GridPoint(x, y), newTile);
+		AddTileToDictionary(newTile, x, y);
 	}
 
 	public static void GeneratePath()

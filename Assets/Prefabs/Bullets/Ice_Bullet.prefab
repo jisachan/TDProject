@@ -106,8 +106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c13cf53c8a9186428f28e8f4927a8b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
-  damage: 50
-  hasDealtDamage: 0
+  speed: 8
+  damage: 20
   slowEffectMultiplier: 0.5
   slowEffectDuration: 2

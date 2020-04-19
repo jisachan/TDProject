@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
@@ -8,15 +6,17 @@ public class Tile : MonoBehaviour
 
     public Vector3 WorldPosition => transform.position;
 
-    public Vector3 pathPosition;
+    public Vector3 PathPosition { get => pathPosition; set => pathPosition = value; }
+ 
+    Vector3 pathPosition;
+
+    [HideInInspector]
+    public bool walkable = false;
 
     float pathOffset = 0.6f;
-
-    public bool Walkable = false;
-
+       
     public void Setup(GridPoint gridPos, Vector3 worldPosition, Transform parent)
     {
-        //look into these when needed, might be nonsensical
         GridPosition = gridPos;
         transform.position = worldPosition;
         transform.SetParent(parent);
@@ -24,6 +24,6 @@ public class Tile : MonoBehaviour
 
     public void SetPathPosition()
     {
-        pathPosition = new Vector3(WorldPosition.x, WorldPosition.y + pathOffset, WorldPosition.z);
+        PathPosition = new Vector3(WorldPosition.x, WorldPosition.y + pathOffset, WorldPosition.z);
     }
 }

@@ -1,17 +1,35 @@
 ﻿using UnityEngine;
 using Tools;
+using System;
 
 public class FireTower : TowerBase
 {
-	[SerializeField]
-	GameObject fireProjectilePrefab;
+	[SerializeField, Tooltip("Where the projectiles go hide after despawning.")]
+	Transform projectilePoolTransform;
+
+	[SerializeField, Tooltip("Which projectile to shoot from this tower.")]
+	GameObject projectilePrefab;
 
 	IPool<FireProjectile> fireProjectilePool;
+
+	public static Action<FireProjectile> returnToPool;
+
+	private void Awake()
+	{
+		projectilePoolTransform = GameObject.Find("BulletPoolTransform").transform;
+	}
 
 	protected override void Start()
 	{
 		base.Start();
-		fireProjectilePool = new ObjectPool<FireProjectile>(fireProjectilePrefab, transform);
+		returnToPool += ReturnToPool;
+
+		SetProjectilePool();
+	}
+
+	void SetProjectilePool()
+	{
+		fireProjectilePool = new ObjectPool<FireProjectile>(projectilePrefab, projectilePoolTransform);
 	}
 
 	protected override void SpawnBullet()
@@ -19,15 +37,22 @@ public class FireTower : TowerBase
 		base.SpawnBullet();
 
 		FireProjectile bullet = fireProjectilePool.Rent() as FireProjectile;
-
-		bullet.SetTarget(target);
-		bullet.transform.position = transform.position;
-		bullet.gameObject.SetActive(true);
+		
+		SetUpBullet(bullet);		
 	}
 
-	public override void ReturnToPool(ProjectileBase projectileToReturn)
+	void SetUpBullet(FireProjectile bullet)
 	{
-		base.ReturnToPool(projectileToReturn);
-		fireProjectilePool.UnRent(projectileToReturn as FireProjectile);
+		if (bullet)
+		{
+			bullet.SetTarget(target);
+			bullet.transform.position = projectileSpawnPoint.transform.position;
+			bullet.gameObject.SetActive(true);
+		}
+	}
+
+	void ReturnToPool(FireProjectile projectileToReturn)
+	{
+		fireProjectilePool.UnRent(projectileToReturn);
 	}
 }

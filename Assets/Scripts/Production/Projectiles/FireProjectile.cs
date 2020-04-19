@@ -4,7 +4,7 @@ using UnityEngine;
 public class FireProjectile : ProjectileBase
 {
     [SerializeField, Tooltip("Damage per tick.")]
-    float dotDamage = 5;
+    float tickDamage = 5;
 
     [SerializeField, Tooltip("How many seconds between each damage tick.")]
     float tickTimer = 1.5f;
@@ -26,11 +26,11 @@ public class FireProjectile : ProjectileBase
         {
             if (currentTick < maxTicks)
             {
-                target.TakeDamage(dotDamage);
+                target.TakeDamage(tickDamage);
 
                 currentTick++;
             }
-            //Debug.Log(currentTick);
+
             if (currentTick == maxTicks)
             {
                 DespawnProjectile();
@@ -45,14 +45,19 @@ public class FireProjectile : ProjectileBase
         base.HideVisibility();
         gameObject.GetComponent<Renderer>().enabled = false;
     }
-
+    
     public override void DespawnProjectile()
     {
         base.DespawnProjectile();
-        TowerBase.returnToPool?.Invoke(this);
-        hasDealtDamage = false;
+        ResetVarValues();
+        FireTower.returnToPool?.Invoke(this);
+    }
+
+    public void ResetVarValues()
+    {
         gameObject.SetActive(false);
-        gameObject.GetComponent<Renderer>().enabled = true;
+        hasDealtDamage = false;
         currentTick = 0;
+        gameObject.GetComponent<Renderer>().enabled = true;
     }
 }

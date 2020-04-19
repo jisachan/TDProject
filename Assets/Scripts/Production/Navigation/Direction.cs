@@ -1,5 +1,4 @@
-﻿
-namespace Tools
+﻿namespace Tools
 {
     public enum Direction
     {

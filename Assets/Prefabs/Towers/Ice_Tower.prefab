@@ -298,8 +298,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53512a53667ce0f419c870c5598995df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pathPosition: {x: 0, y: 0, z: 0}
-  Walkable: 0
+  walkable: 0
 --- !u!114 &8148988996637326250
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -312,10 +311,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0fa2aac36656494d9963763b76e8308, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firingTimer: 1
+  firingTimer: 2
   range: 4
+  projectileSpawnPoint: {fileID: 242510282953726403}
   target: {fileID: 0}
-  iceProjectilePrefab: {fileID: 225077031991834588, guid: e2865f010891d4cda90f443c0fe28d13,
+  bulletPoolTransform: {fileID: 0}
+  projectilePrefab: {fileID: 225077031991834588, guid: e2865f010891d4cda90f443c0fe28d13,
     type: 3}
 --- !u!1 &7391422965515881056
 GameObject:

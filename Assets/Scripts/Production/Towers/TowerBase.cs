@@ -2,15 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Tools;
 
 public abstract class TowerBase : MonoBehaviour
 {
-	[SerializeField]
+	[SerializeField, Tooltip("How often the tower fires a projectile.")]
 	float firingTimer = 3;
 
-	[SerializeField]
+	[SerializeField, Tooltip("How close the target needs to be for the tower to shoot at it.")]
 	float range = 2f;
+	
+	[SerializeField, Tooltip("Where on the tower to spawn the projectile.")]
+	protected Transform projectileSpawnPoint;
 
 	[HideInInspector]
 	public UnitBase target;
@@ -19,20 +21,14 @@ public abstract class TowerBase : MonoBehaviour
 
 	public static List<UnitBase> targetsWithinRange = new List<UnitBase>();
 
-	public static Action<ProjectileBase> returnToPool;
-
-	// Start is called before the first frame update
 	protected virtual void Start()
 	{
-		returnToPool += ReturnToPool;
-
 		StartCoroutine(ShootBullet());
 	}
 
-	// Update is called once per frame
 	void Update()
 	{
-		//add to observer thingie
+		//Possible to put this outside of Update??
 		GetTargetInFront();
 	}
 
@@ -97,12 +93,6 @@ public abstract class TowerBase : MonoBehaviour
 	}
 
 	protected virtual void SpawnBullet()
-	{
-
-	}
-
-	//wont it cause problems if this is projectilebase when pool doesnt use it?
-	public virtual void ReturnToPool(ProjectileBase projectileToReturn)
 	{
 
 	}

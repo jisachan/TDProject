@@ -678,11 +678,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 608290f761c5e6a44ab3f3323228bb25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
   accuracy: 0.1
-  speed: 2
+  speed: 4
+  health: 250
   strength: 1
-  fireProjectilePrefab: {fileID: 0}
 --- !u!1 &3358623668240928174
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,15 +3,11 @@ using UnityEngine;
 
 public class IceProjectile : ProjectileBase
 {
-    //remember to attach script to projectile in engine
-
     [SerializeField, Tooltip("Multiplier value with which to reduce target's speed."), Range(0, 1)]
     float slowEffectMultiplier = 0.5f;
 
     [SerializeField, Tooltip("For how long the target has reduced speed")]
     float slowEffectDuration = 2;
-
-    bool slowed = false;
 
     float tempspeed;
 
@@ -23,16 +19,21 @@ public class IceProjectile : ProjectileBase
 
     IEnumerator ApplySlowEffect()
     {
-        if (slowed == false)
+        if (target.Slowed == false)
         {
+            target.Slowed = true;
             tempspeed = target.Speed;
             target.Speed *= slowEffectMultiplier;
-            slowed = true;
             yield return new WaitForSeconds(slowEffectDuration);
             target.Speed = tempspeed;
-            slowed = false;
+            target.Slowed = false;
             DespawnProjectile();
-        }             
+        }
+        else
+        {
+            DespawnProjectile();
+            yield return null;
+        }
     }
 
     public override void HideVisibility()
@@ -44,9 +45,13 @@ public class IceProjectile : ProjectileBase
     public override void DespawnProjectile()
     {
         base.DespawnProjectile();
-        TowerBase.returnToPool?.Invoke(this);
-        hasDealtDamage = false;
+        ResetVarValues();
+        IceTower.returnToPool?.Invoke(this);
+    }
+    public void ResetVarValues()
+    {
         gameObject.SetActive(false);
+        hasDealtDamage = false;
         gameObject.GetComponent<Renderer>().enabled = true;
     }
 }

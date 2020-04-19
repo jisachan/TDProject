@@ -1,27 +1,26 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public abstract class ProjectileBase : MonoBehaviour
 {
-    [SerializeField]
-    protected float speed = 5;
+    [SerializeField, Tooltip("How fast the projectile travels.")]
+    protected float speed = 8;
 
-    [SerializeField]
+    [SerializeField, Tooltip("How much damage the projectile does.")]
     protected float damage = 20;
+
+    protected bool hasDealtDamage = false;
 
     protected UnitBase target;
 
-    [SerializeField]
-    protected bool hasDealtDamage = false;
-
-    // Update is called once per frame
     void Update()
     {
+        //Possible to put this outside of Update??
         if (target != null)
         {
             ShootProjectile();
 
-            //move to observer later
-            if (Mathf.Approximately(Vector3.Distance(transform.position, target.transform.position), 0))
+            if (ProjectileReachedTarget())
             {
                 if (hasDealtDamage == false)
                 {
@@ -35,12 +34,21 @@ public abstract class ProjectileBase : MonoBehaviour
         }
     }
 
+    public bool ProjectileReachedTarget()
+    {
+        if (Mathf.Approximately(Vector3.Distance(transform.position, target.transform.position), 0))
+        {
+            return true;
+        }
+        return false;
+    }
+
     public void DealDamage()
     {
         target.TakeDamage(damage);
-        SpecialAbility();
         hasDealtDamage = true;
         HideVisibility();
+        SpecialAbility();
     }
 
     public virtual void SpecialAbility()
@@ -64,6 +72,5 @@ public abstract class ProjectileBase : MonoBehaviour
 
     public virtual void DespawnProjectile()
     {
-        hasDealtDamage = false;
     }
 }

@@ -3,17 +3,18 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-	[SerializeField]
+	[SerializeField, Tooltip("Number of hits the enemy base can take before it's Game Over.")]
 	int lives = 20;
-
-	public static Action<UnitBase> reachedPlayerBase;
 
 	public int Lives { get => lives; set => lives = value; }
 
+	public static Action<UnitBase> reachedPlayerBase;
+	
 	public void Start()
 	{
 		reachedPlayerBase += UponReachingPlayerBase;
 	}
+
 	private void OnDestroy()
 	{
 		reachedPlayerBase -= UponReachingPlayerBase;
@@ -28,12 +29,10 @@ public class Player : MonoBehaviour
 	public void LoseLives(int livesLost)
 	{
 		lives -= livesLost;
-
-		//edit infinite if later.
+		Debug.Log("Current lives: " + lives);
 		if (lives <= 0)
 		{
-			//Todo: gameover
-			//GameManager.StartNextLevel();
+			GameManager.GameFinished();
 		}
 	}
 }
